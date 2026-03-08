@@ -1,0 +1,65 @@
+# ── Build ──────────────────────────────────────────────────────────────────────
+build/
+build-*/
+out/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+CTestTestfile.cmake
+CPackConfig.cmake
+CPackSourceConfig.cmake
+install_manifest.txt
+Makefile
+
+# ── Binaries ───────────────────────────────────────────────────────────────────
+*.o
+*.a
+*.so
+*.so.*
+*.dylib
+*.dll
+*.exe
+*.out
+
+# ── Vault files (NEVER commit these) ──────────────────────────────────────────
+*.vcf
+*.vcf.tmp
+*.vcf.bak
+
+# ── Import CSV files (may contain real passwords) ─────────────────────────────
+*passwords*.csv
+*export*.csv
+
+# ── Sanitizer / debug artifacts ───────────────────────────────────────────────
+*.asan
+*.tsan
+*.gcda
+*.gcno
+*.gcov
+callgrind.out.*
+massif.out.*
+vgcore.*
+
+# ── Editor & IDE ───────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ── CPack / packaging output ───────────────────────────────────────────────────
+_CPack_Packages/
+*.deb
+*.rpm
+*.dmg
+*.nsis
+*.msi
+*.tar.gz
+*.zip
+
+# ── Test artifacts ─────────────────────────────────────────────────────────────
+Testing/
+tests/fixtures/tmp/
