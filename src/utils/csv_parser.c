@@ -14,10 +14,10 @@
 struct CsvParser
 {
     FILE *fp;
-    char *line_buf;     /* Dynamic line buffer                */
-    size_t line_cap;    /* Capacity of line_buf               */
-    size_t line_len;    /* Current length of data in line_buf */
-    int eof;            /* Set when feof is reached           */
+    char *line_buf;  /* Dynamic line buffer                */
+    size_t line_cap; /* Capacity of line_buf               */
+    size_t line_len; /* Current length of data in line_buf */
+    int eof;         /* Set when feof is reached           */
 };
 
 /* ── Internal: read a complete logical line (handles \r\n and \n) ──────────── */

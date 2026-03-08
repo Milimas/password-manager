@@ -1,0 +1,3 @@
+Title,URL,Username,Password,Notes,OTPAuth
+Twitter,https://twitter.com,carol,Tw1tt3rP@ss,Social media account,
+Dropbox,https://www.dropbox.com,carol@email.com,Dr0pB0x!,Cloud storage,otpauth://totp/Dropbox:carol@email.com?secret=JBSWY3DPEHPK3PXP&issuer=Dropbox

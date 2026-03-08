@@ -18,7 +18,7 @@
  * Used exclusively for HMAC-SHA1 in TOTP. Not for general hashing.
  * ═══════════════════════════════════════════════════════════════════════════ */
 
-#define SHA1_BLOCK_SIZE  64
+#define SHA1_BLOCK_SIZE 64
 #define SHA1_DIGEST_SIZE 20
 
 typedef struct

@@ -1,0 +1,5 @@
+folder,favorite,type,name,notes,fields,reprompt,login_uri,login_username,login_password,login_totp
+Social,1,login,Facebook,Personal FB,,0,https://facebook.com,dave@email.com,F@c3b00k!,
+Work,,login,Slack,Work chat,,0,https://slack.com,dave,Sl@ckP@ss,JBSWY3DPEHPK3PXP
+Finance,,card,Visa Card,Primary card,,0,,,,
+Shopping,,login,eBay,Online shopping,,0,https://www.ebay.com,dave_shop,3B@yBuyer,

@@ -1,0 +1,4 @@
+url,username,password,httpRealm,formActionOrigin,guid,timeCreated,timeLastUsed,timePasswordChanged
+https://www.reddit.com,bob_reddit,R3dd1tP@ss,,https://www.reddit.com,{abcd-1234},1700000000000,1710000000000,1700000000000
+https://stackoverflow.com,bob_dev,St@ckP@ss123,,https://stackoverflow.com,{efgh-5678},1700000000000,1710000000000,1700000000000
+https://news.ycombinator.com,bob_hn,H@ck3rN3ws,,https://news.ycombinator.com,{ijkl-9012},1700000000000,1710000000000,1700000000000

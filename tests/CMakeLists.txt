@@ -28,3 +28,8 @@ vaultc_add_test(test_vault  test_vault.c)
 vaultc_add_test(test_db     test_db.c)
 vaultc_add_test(test_import test_import.c)
 vaultc_add_test(test_pwgen  test_pwgen.c)
+
+# ── Pass fixtures directory path to test_import ────────────────────────────────
+target_compile_definitions(test_import PRIVATE
+    FIXTURES_DIR="${CMAKE_SOURCE_DIR}/tests/fixtures"
+)
