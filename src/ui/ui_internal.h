@@ -65,4 +65,14 @@ void ui_show_generator_dialog(GtkWindow *parent, GtkEditable *target);
  */
 void ui_show_settings_dialog(GtkWindow *parent);
 
+/* ── Main window helpers ────────────────────────────────────────────────────── */
+
+/**
+ * Refresh the entry list in the main window.  This can be called from
+ * other dialogs after entries are added/modified/imported.  The argument
+ * should be the GtkWindow pointer that was passed as the parent when the
+ * main window was created.
+ */
+void ui_main_window_refresh(GtkWindow *window);
+
 #endif /* VAULTC_UI_INTERNAL_H */

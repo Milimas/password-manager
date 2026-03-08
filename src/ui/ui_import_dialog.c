@@ -134,6 +134,9 @@ static void on_import_done(GObject *source, GAsyncResult *res,
         gtk_widget_set_visible(dlg->result_label, TRUE);
         g_free(result);
     }
+
+    /* refresh main window list so new entries appear immediately */
+    ui_main_window_refresh(dlg->parent);
 }
 
 /* ── Import button clicked ─────────────────────────────────────────────────── */

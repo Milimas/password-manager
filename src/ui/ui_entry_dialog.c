@@ -116,6 +116,9 @@ static void on_save_clicked(GtkButton *btn, gpointer user_data)
         return;
     }
 
+    /* update the main window list before closing */
+    ui_main_window_refresh(dlg->parent);
+
     gtk_window_destroy(dlg->dialog);
 }
 
@@ -142,6 +145,7 @@ static void on_delete_clicked(GtkButton *btn, gpointer user_data)
     }
 
     session_entry_delete(dlg->uuid);
+    ui_main_window_refresh(dlg->parent);
     gtk_window_destroy(dlg->dialog);
 }
 

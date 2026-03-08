@@ -406,6 +406,16 @@ static void on_main_window_destroy(GtkWidget *widget, gpointer user_data)
 
 /* ── Public: show main window ──────────────────────────────────────────────── */
 
+void ui_main_window_refresh(GtkWindow *window)
+{
+    if (window == NULL)
+        return;
+
+    MainWindow *mw = g_object_get_data(G_OBJECT(window), "main-window");
+    if (mw != NULL)
+        mw_refresh_list(mw);
+}
+
 void ui_show_main_window(GtkApplication *app)
 {
     MainWindow *mw = g_new0(MainWindow, 1);
@@ -416,6 +426,9 @@ void ui_show_main_window(GtkApplication *app)
     gtk_window_set_title(GTK_WINDOW(window), "VaultC");
     gtk_window_set_default_size(GTK_WINDOW(window), 900, 600);
     mw->window = GTK_WINDOW(window);
+
+    /* store pointer so other modules can find it */
+    g_object_set_data(G_OBJECT(window), "main-window", mw);
 
     /* Header bar */
     GtkWidget *header = gtk_header_bar_new();
