@@ -75,18 +75,18 @@ static Entry *entry_from_row(sqlite3_stmt *stmt)
         e->uuid[VAULTC_UUID_LEN - 1] = '\0';
     }
 
-    e->title       = safe_strdup((const char *)sqlite3_column_text(stmt, 1));
-    e->url         = safe_strdup((const char *)sqlite3_column_text(stmt, 2));
-    e->username    = safe_strdup((const char *)sqlite3_column_text(stmt, 3));
-    e->password    = safe_strdup((const char *)sqlite3_column_text(stmt, 4));
-    e->notes       = safe_strdup((const char *)sqlite3_column_text(stmt, 5));
+    e->title = safe_strdup((const char *)sqlite3_column_text(stmt, 1));
+    e->url = safe_strdup((const char *)sqlite3_column_text(stmt, 2));
+    e->username = safe_strdup((const char *)sqlite3_column_text(stmt, 3));
+    e->password = safe_strdup((const char *)sqlite3_column_text(stmt, 4));
+    e->notes = safe_strdup((const char *)sqlite3_column_text(stmt, 5));
     e->totp_secret = safe_strdup((const char *)sqlite3_column_text(stmt, 6));
-    e->category    = safe_strdup((const char *)sqlite3_column_text(stmt, 7));
+    e->category = safe_strdup((const char *)sqlite3_column_text(stmt, 7));
     e->is_favorite = sqlite3_column_int(stmt, 8);
-    e->created_at  = sqlite3_column_int64(stmt, 9);
-    e->updated_at  = sqlite3_column_int64(stmt, 10);
-    e->last_used   = sqlite3_column_int64(stmt, 11);
-    e->source      = safe_strdup((const char *)sqlite3_column_text(stmt, 12));
+    e->created_at = sqlite3_column_int64(stmt, 9);
+    e->updated_at = sqlite3_column_int64(stmt, 10);
+    e->last_used = sqlite3_column_int64(stmt, 11);
+    e->source = safe_strdup((const char *)sqlite3_column_text(stmt, 12));
 
     return e;
 }

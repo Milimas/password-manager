@@ -18,7 +18,7 @@
 /* ── Shared test vault path ────────────────────────────────────────────────── */
 
 #define TEST_VAULT "/tmp/vaultc_test_db.vcf"
-#define TEST_PW    "test-master-password-db"
+#define TEST_PW "test-master-password-db"
 
 /* ── Test UUID constants ───────────────────────────────────────────────────── */
 
@@ -46,18 +46,18 @@ static Entry make_entry(const char *uuid, const char *title,
     memset(&e, 0, sizeof(e));
     strncpy(e.uuid, uuid, VAULTC_UUID_LEN - 1);
     e.uuid[VAULTC_UUID_LEN - 1] = '\0';
-    e.title       = (char *)title;
-    e.url         = (char *)url;
-    e.username    = (char *)username;
-    e.password    = (char *)password;
-    e.notes       = NULL;
+    e.title = (char *)title;
+    e.url = (char *)url;
+    e.username = (char *)username;
+    e.password = (char *)password;
+    e.notes = NULL;
     e.totp_secret = NULL;
-    e.category    = (char *)category;
-    e.source      = (char *)"manual";
+    e.category = (char *)category;
+    e.source = (char *)"manual";
     e.is_favorite = 0;
-    e.created_at  = created_at;
-    e.updated_at  = updated_at;
-    e.last_used   = 0;
+    e.created_at = created_at;
+    e.updated_at = updated_at;
+    e.last_used = 0;
     return e;
 }
 
@@ -77,10 +77,10 @@ TEST(test_create_read_fields_match)
 
     Entry e = make_entry(UUID_1, "Google", "https://google.com",
                          "alice", "s3cret!", "Social", 1000, 2000);
-    e.notes       = (char *)"some notes";
+    e.notes = (char *)"some notes";
     e.totp_secret = (char *)"JBSWY3DPEHPK3PXP";
     e.is_favorite = 1;
-    e.last_used   = 3000;
+    e.last_used = 3000;
 
     VaultcError rc = db_entry_create(db, &e);
     ASSERT_EQ(rc, VAULTC_OK);
