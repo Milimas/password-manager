@@ -83,9 +83,14 @@ install(TARGETS vaultc DESTINATION bin)
 if(UNIX AND NOT APPLE)
     install(FILES packaging/com.vaultc.app.desktop
             DESTINATION share/applications)
-    install(FILES packaging/com.vaultc.app.png
-            DESTINATION share/icons/hicolor/256x256/apps)
-    # MIME type registration
+    install(FILES packaging/icons/hicolor/256x256/apps/com.vaultc.app.png
+	    DESTINATION share/icons/hicolor/256x256/apps)
+    install(FILES packaging/icons/hicolor/128x128/apps/com.vaultc.app.png
+	    DESTINATION share/icons/hicolor/128x128/apps)
+    install(FILES packaging/icons/hicolor/64x64/apps/com.vaultc.app.png
+	    DESTINATION share/icons/hicolor/64x64/apps)
+    install(FILES packaging/icons/hicolor/48x48/apps/com.vaultc.app.png
+	    DESTINATION share/icons/hicolor/48x48/apps)# MIME type registration
     install(FILES packaging/com.vaultc.app.xml
             DESTINATION share/mime/packages)
 endif()
