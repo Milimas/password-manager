@@ -33,6 +33,7 @@ target_link_libraries(vaultc_core
     ${SODIUM_LIBRARIES}
     SQLite::SQLite3
     ${GTK4_LIBRARIES}
+    m
 )
 
 target_link_directories(vaultc_core PUBLIC
