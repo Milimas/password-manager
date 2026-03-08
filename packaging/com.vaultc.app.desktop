@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.1
+Type=Application
+Name=VaultC
+GenericName=Password Manager
+Comment=Secure offline password manager
+Exec=vaultc
+Icon=com.vaultc.app
+Terminal=false
+Categories=Utility;Security;System;
+Keywords=password;vault;security;credentials;
+StartupNotify=true
+MimeType=application/x-vaultc;

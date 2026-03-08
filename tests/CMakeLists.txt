@@ -29,6 +29,30 @@ vaultc_add_test(test_db     test_db.c)
 vaultc_add_test(test_import test_import.c)
 vaultc_add_test(test_pwgen  test_pwgen.c)
 
+# ── Integration test (needs GLib for session layer) ────────────────────────────
+add_executable(test_integration test_integration.c)
+target_include_directories(test_integration PRIVATE
+    ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/tests
+    ${SODIUM_INCLUDE_DIRS}
+    ${SQLite3_INCLUDE_DIRS}
+    ${GTK4_INCLUDE_DIRS}
+)
+target_link_libraries(test_integration
+    vaultc_core
+    ${SODIUM_LIBRARIES}
+    SQLite::SQLite3
+    ${GTK4_LIBRARIES}
+)
+target_link_directories(test_integration PRIVATE
+    ${SODIUM_LIBRARY_DIRS}
+    ${GTK4_LIBRARY_DIRS}
+)
+target_compile_definitions(test_integration PRIVATE
+    FIXTURES_DIR="${CMAKE_SOURCE_DIR}/tests/fixtures"
+)
+add_test(NAME test_integration COMMAND test_integration)
+
 # ── Pass fixtures directory path to test_import ────────────────────────────────
 target_compile_definitions(test_import PRIVATE
     FIXTURES_DIR="${CMAKE_SOURCE_DIR}/tests/fixtures"
