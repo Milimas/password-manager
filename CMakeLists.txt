@@ -85,6 +85,9 @@ if(UNIX AND NOT APPLE)
             DESTINATION share/applications)
     install(FILES packaging/com.vaultc.app.png
             DESTINATION share/icons/hicolor/256x256/apps)
+    # MIME type registration
+    install(FILES packaging/com.vaultc.app.xml
+            DESTINATION share/mime/packages)
 endif()
 
 # ── CPack (packaging) ──────────────────────────────────────────────────────────
@@ -97,5 +100,11 @@ elseif(APPLE)
     set(CPACK_GENERATOR "DragNDrop")
 else()
     set(CPACK_GENERATOR "DEB;RPM")
+endif()
+if(UNIX AND NOT APPLE)
+    install(CODE "execute_process(COMMAND update-mime-database
+                  \$ENV{DESTDIR}/usr/share/mime)")
+    install(CODE "execute_process(COMMAND update-desktop-database
+                  \$ENV{DESTDIR}/usr/share/applications)")
 endif()
 include(CPack)
