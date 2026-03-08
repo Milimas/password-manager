@@ -19,15 +19,15 @@ static PwgenOptions default_opts(void)
 {
     PwgenOptions opts;
     memset(&opts, 0, sizeof(opts));
-    opts.length        = 20;
+    opts.length = 20;
     opts.use_uppercase = true;
     opts.use_lowercase = true;
-    opts.use_digits    = true;
-    opts.use_symbols   = true;
+    opts.use_digits = true;
+    opts.use_symbols = true;
     opts.exclude_chars = NULL;
     opts.min_uppercase = 0;
-    opts.min_digits    = 0;
-    opts.min_symbols   = 0;
+    opts.min_digits = 0;
+    opts.min_symbols = 0;
     return opts;
 }
 
@@ -63,11 +63,11 @@ TEST(test_generate_digits_only)
 {
     PwgenOptions opts;
     memset(&opts, 0, sizeof(opts));
-    opts.length        = 30;
+    opts.length = 30;
     opts.use_uppercase = false;
     opts.use_lowercase = false;
-    opts.use_digits    = true;
-    opts.use_symbols   = false;
+    opts.use_digits = true;
+    opts.use_symbols = false;
 
     char *pw = pwgen_generate(&opts);
     ASSERT_NOT_NULL(pw);
@@ -86,11 +86,11 @@ TEST(test_generate_lowercase_only)
 {
     PwgenOptions opts;
     memset(&opts, 0, sizeof(opts));
-    opts.length        = 30;
+    opts.length = 30;
     opts.use_uppercase = false;
     opts.use_lowercase = true;
-    opts.use_digits    = false;
-    opts.use_symbols   = false;
+    opts.use_digits = false;
+    opts.use_symbols = false;
 
     char *pw = pwgen_generate(&opts);
     ASSERT_NOT_NULL(pw);
@@ -109,8 +109,8 @@ TEST(test_generate_all_classes_present)
     PwgenOptions opts = default_opts();
     opts.length = 40;
     opts.min_uppercase = 1;
-    opts.min_digits    = 1;
-    opts.min_symbols   = 1;
+    opts.min_digits = 1;
+    opts.min_symbols = 1;
 
     char *pw = pwgen_generate(&opts);
     ASSERT_NOT_NULL(pw);
@@ -119,10 +119,14 @@ TEST(test_generate_all_classes_present)
     int has_upper = 0, has_lower = 0, has_digit = 0, has_sym = 0;
     for (size_t i = 0; i < strlen(pw); i++)
     {
-        if (is_upper(pw[i]))  has_upper = 1;
-        if (is_lower(pw[i]))  has_lower = 1;
-        if (is_digit(pw[i]))  has_digit = 1;
-        if (is_symbol(pw[i])) has_sym   = 1;
+        if (is_upper(pw[i]))
+            has_upper = 1;
+        if (is_lower(pw[i]))
+            has_lower = 1;
+        if (is_digit(pw[i]))
+            has_digit = 1;
+        if (is_symbol(pw[i]))
+            has_sym = 1;
     }
 
     ASSERT_TRUE(has_upper);
@@ -137,10 +141,10 @@ TEST(test_generate_all_classes_present)
 TEST(test_generate_min_constraints)
 {
     PwgenOptions opts = default_opts();
-    opts.length        = 20;
+    opts.length = 20;
     opts.min_uppercase = 5;
-    opts.min_digits    = 5;
-    opts.min_symbols   = 3;
+    opts.min_digits = 5;
+    opts.min_symbols = 3;
 
     char *pw = pwgen_generate(&opts);
     ASSERT_NOT_NULL(pw);
@@ -148,12 +152,15 @@ TEST(test_generate_min_constraints)
     int up = 0, dig = 0, sym = 0;
     for (size_t i = 0; i < strlen(pw); i++)
     {
-        if (is_upper(pw[i]))  up++;
-        if (is_digit(pw[i]))  dig++;
-        if (is_symbol(pw[i])) sym++;
+        if (is_upper(pw[i]))
+            up++;
+        if (is_digit(pw[i]))
+            dig++;
+        if (is_symbol(pw[i]))
+            sym++;
     }
 
-    ASSERT_TRUE(up  >= 5);
+    ASSERT_TRUE(up >= 5);
     ASSERT_TRUE(dig >= 5);
     ASSERT_TRUE(sym >= 3);
 
@@ -164,7 +171,7 @@ TEST(test_generate_min_constraints)
 TEST(test_generate_exclude_chars)
 {
     PwgenOptions opts = default_opts();
-    opts.length        = 50;
+    opts.length = 50;
     opts.exclude_chars = "aeiouAEIOU0O1lI";
 
     char *pw = pwgen_generate(&opts);
@@ -250,7 +257,8 @@ TEST(test_check_strength_thresholds)
 
     /* Very strong: long password */
     ASSERT_EQ(pwgen_check_strength(
-        "aA1!bB2@cC3#dD4$eE5%fF6^"), STRENGTH_VERY_STRONG);
+                  "aA1!bB2@cC3#dD4$eE5%fF6^"),
+              STRENGTH_VERY_STRONG);
 }
 
 TEST(test_1000_unique_passwords)
@@ -258,7 +266,7 @@ TEST(test_1000_unique_passwords)
     PwgenOptions opts = default_opts();
     opts.length = 24;
 
-    #define N_PASSWORDS 1000
+#define N_PASSWORDS 1000
     char *passwords[N_PASSWORDS];
 
     for (int i = 0; i < N_PASSWORDS; i++)
@@ -287,7 +295,7 @@ TEST(test_1000_unique_passwords)
         crypto_secure_zero(passwords[i], (size_t)opts.length);
         free(passwords[i]);
     }
-    #undef N_PASSWORDS
+#undef N_PASSWORDS
 }
 
 /* ── Runner ────────────────────────────────────────────────────────────────── */

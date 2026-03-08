@@ -15,13 +15,13 @@
 
 static const char UPPERCASE[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 static const char LOWERCASE[] = "abcdefghijklmnopqrstuvwxyz";
-static const char DIGITS[]    = "0123456789";
-static const char SYMBOLS[]   = "!@#$%^&*()-_=+[]{}<>,.?/|~";
+static const char DIGITS[] = "0123456789";
+static const char SYMBOLS[] = "!@#$%^&*()-_=+[]{}<>,.?/|~";
 
 #define UPPERCASE_LEN 26
 #define LOWERCASE_LEN 26
-#define DIGITS_LEN    10
-#define SYMBOLS_LEN   26
+#define DIGITS_LEN 10
+#define SYMBOLS_LEN 26
 
 /* ── Internal: check if a character is in a string ─────────────────────────── */
 
@@ -115,7 +115,7 @@ static size_t build_charset(const PwgenOptions *opts, char *charset,
 #define RAND_BUF_SIZE 256
 
 static uint8_t g_rand_buf[RAND_BUF_SIZE];
-static size_t  g_rand_pos = RAND_BUF_SIZE; /* force initial fill */
+static size_t g_rand_pos = RAND_BUF_SIZE; /* force initial fill */
 
 static uint8_t next_random_byte(void)
 {
