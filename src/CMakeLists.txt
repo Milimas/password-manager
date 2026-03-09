@@ -18,6 +18,7 @@ set(VAULTC_CORE_SOURCES
     utils/totp.c
     utils/csv_parser.c
     app/session.c
+    sync/sync_r2.c
 )
 
 add_library(vaultc_core STATIC ${VAULTC_CORE_SOURCES})
@@ -33,8 +34,12 @@ target_link_libraries(vaultc_core
     ${SODIUM_LIBRARIES}
     SQLite::SQLite3
     ${GTK4_LIBRARIES}
-    m
 )
+
+if(CURL_FOUND)
+    target_link_libraries(vaultc_core ${CURL_LIBRARIES})
+    target_include_directories(vaultc_core PUBLIC ${CURL_INCLUDE_DIRS})
+endif()
 
 target_link_directories(vaultc_core PUBLIC
     ${SODIUM_LIBRARY_DIRS}
@@ -58,6 +63,7 @@ add_executable(vaultc ${VAULTC_UI_SOURCES})
 target_link_libraries(vaultc
     vaultc_core
     ${GTK4_LIBRARIES}
+    m
 )
 
 target_link_directories(vaultc PUBLIC

@@ -63,3 +63,6 @@ _CPack_Packages/
 # ── Test artifacts ─────────────────────────────────────────────────────────────
 Testing/
 tests/fixtures/tmp/
+
+.env
+*.log

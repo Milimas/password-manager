@@ -7,11 +7,13 @@
 
 #include "vaultc/session.h"
 
+#include <gio/gio.h>
 #include <glib.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "vaultc/crypto.h"
+#include "vaultc/sync.h"
 
 /* ── Global session instance ───────────────────────────────────────────────── */
 
@@ -70,6 +72,37 @@ VaultcError session_create_vault(const char *master_password)
     return VAULTC_OK;
 }
 
+#ifdef HAVE_LIBCURL
+/* Async data for upload task */
+typedef struct
+{
+    char *path;
+    SyncConfig *cfg;
+} SyncAsyncData;
+
+static void sync_async_data_free(gpointer data)
+{
+    SyncAsyncData *d = data;
+    if (d == NULL)
+        return;
+    g_free(d->path);
+    sync_config_free(d->cfg);
+    g_free(d);
+}
+
+static void sync_upload_thread(GTask *task, gpointer source,
+                               gpointer task_data,
+                               GCancellable *cancellable)
+{
+    (void)source;
+    (void)cancellable;
+    SyncAsyncData *d = task_data;
+    /* ignore result, sync is best-effort */
+    (void)sync_upload(d->path, d->cfg);
+    g_task_return_boolean(task, TRUE);
+}
+#endif
+
 VaultcError session_open_vault(const char *master_password)
 {
     if (master_password == NULL)
@@ -78,6 +111,17 @@ VaultcError session_open_vault(const char *master_password)
     }
 
     char *path = session_get_vault_path();
+
+#ifdef HAVE_LIBCURL
+    SyncConfig *cfg = sync_config_load();
+    if (cfg && cfg->enabled)
+    {
+        /* download may replace local file if remote is newer */
+        (void)sync_download(path, cfg);
+    }
+    if (cfg)
+        sync_config_free(cfg);
+#endif
 
     VaultHandle *vh = vault_open(path, master_password);
     if (vh == NULL)
@@ -119,7 +163,34 @@ VaultcError session_save(void)
     {
         return VAULTC_ERR_INVALID_ARG;
     }
-    return vault_save(g_session.vault);
+
+    VaultcError err = vault_save(g_session.vault);
+
+#ifdef HAVE_LIBCURL
+    if (err == VAULTC_OK)
+    {
+        SyncConfig *cfg = sync_config_load();
+        if (cfg && cfg->enabled)
+        {
+            SyncAsyncData *d = g_new0(SyncAsyncData, 1);
+            d->path = g_strdup(g_session.vault_path);
+            d->cfg = cfg; /* ownership transferred */
+
+            GTask *task = g_task_new(NULL, NULL, NULL, NULL);
+            g_task_set_task_data(task, d, sync_async_data_free);
+            g_task_run_in_thread(task, sync_upload_thread);
+            g_object_unref(task);
+        }
+        else if (cfg)
+        {
+            sync_config_free(cfg);
+        }
+    }
+#else
+    (void)err;
+#endif
+
+    return err;
 }
 
 /* ── DB access ─────────────────────────────────────────────────────────────── */

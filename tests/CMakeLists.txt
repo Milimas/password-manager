@@ -15,6 +15,7 @@ function(vaultc_add_test name source)
         vaultc_core
         ${SODIUM_LIBRARIES}
         SQLite::SQLite3
+        m
     )
     target_link_directories(${name} PRIVATE
         ${SODIUM_LIBRARY_DIRS}
@@ -28,6 +29,7 @@ vaultc_add_test(test_vault  test_vault.c)
 vaultc_add_test(test_db     test_db.c)
 vaultc_add_test(test_import test_import.c)
 vaultc_add_test(test_pwgen  test_pwgen.c)
+vaultc_add_test(test_sync   test_sync.c)
 
 # ── Integration test (needs GLib for session layer) ────────────────────────────
 add_executable(test_integration test_integration.c)
@@ -43,6 +45,7 @@ target_link_libraries(test_integration
     ${SODIUM_LIBRARIES}
     SQLite::SQLite3
     ${GTK4_LIBRARIES}
+    m
 )
 target_link_directories(test_integration PRIVATE
     ${SODIUM_LIBRARY_DIRS}

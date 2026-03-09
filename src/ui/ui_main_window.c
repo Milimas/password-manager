@@ -427,6 +427,9 @@ void ui_show_main_window(GtkApplication *app)
     gtk_window_set_default_size(GTK_WINDOW(window), 900, 600);
     mw->window = GTK_WINDOW(window);
 
+    /* ensure application knows about this window */
+    gtk_application_add_window(app, GTK_WINDOW(window));
+
     /* store pointer so other modules can find it */
     g_object_set_data(G_OBJECT(window), "main-window", mw);
 

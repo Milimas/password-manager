@@ -31,6 +31,8 @@ const char *vaultc_strerror(VaultcError err)
         return "Database error";
     case VAULTC_ERR_TOO_LONG:
         return "String exceeds maximum length";
+    case VAULTC_ERR_NETWORK:
+        return "Network or sync error";
     default:
         return "Unknown error";
     }

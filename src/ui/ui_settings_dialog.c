@@ -10,6 +10,7 @@
 
 #include "vaultc/session.h"
 #include "vaultc/crypto.h"
+#include "vaultc/sync.h"
 
 #include <string.h>
 
@@ -23,6 +24,16 @@ typedef struct
     GtkWidget *autolock_dropdown;
     GtkWidget *clip_clear_spin;
     GtkWidget *default_pw_spin;
+
+    /* Sync settings */
+    GtkWidget *sync_enable_check;
+    GtkWidget *sync_endpoint_entry;
+    GtkWidget *sync_bucket_entry;
+    GtkWidget *sync_access_key_entry;
+    GtkWidget *sync_secret_key_entry;
+    GtkWidget *sync_object_entry;
+    GtkWidget *sync_save_btn;
+    GtkWidget *sync_save_label;
 
     /* Change password widgets */
     GtkWidget *old_pw_entry;
@@ -151,7 +162,53 @@ static void on_change_pw_clicked(GtkButton *btn, gpointer user_data)
     g_object_unref(task);
 }
 
-/* ── Public: show settings dialog ──────────────────────────────────────────── */
+/* ── Cloud sync configuration ─────────────────────────────────────────────── */
+
+static void on_sync_save_clicked(GtkButton *btn, gpointer user_data)
+{
+    SettingsDialog *dlg = user_data;
+    (void)btn;
+
+    SyncConfig cfg = {0};
+    cfg.enabled = gtk_check_button_get_active(
+        GTK_CHECK_BUTTON(dlg->sync_enable_check)) ? 1 : 0;
+
+    const char *text;
+    text = gtk_editable_get_text(GTK_EDITABLE(dlg->sync_endpoint_entry));
+    cfg.endpoint = text ? g_strdup(text) : NULL;
+    text = gtk_editable_get_text(GTK_EDITABLE(dlg->sync_bucket_entry));
+    cfg.bucket = text ? g_strdup(text) : NULL;
+    text = gtk_editable_get_text(GTK_EDITABLE(dlg->sync_access_key_entry));
+    cfg.access_key_id = text ? g_strdup(text) : NULL;
+    text = gtk_editable_get_text(GTK_EDITABLE(dlg->sync_secret_key_entry));
+    cfg.secret_access_key = text ? g_strdup(text) : NULL;
+    text = gtk_editable_get_text(GTK_EDITABLE(dlg->sync_object_entry));
+    cfg.object_key = text ? g_strdup(text) : NULL;
+
+    VaultcError err = sync_config_save(&cfg);
+    sync_config_clear(&cfg);
+
+    if (err == VAULTC_OK)
+    {
+        gtk_label_set_text(GTK_LABEL(dlg->sync_save_label), "Saved ✓");
+        gtk_widget_add_css_class(dlg->sync_save_label, "success");
+        gtk_widget_set_visible(dlg->sync_save_label, TRUE);
+    }
+    else
+    {
+        gtk_label_set_text(GTK_LABEL(dlg->sync_save_label), "Save failed");
+        gtk_widget_add_css_class(dlg->sync_save_label, "error");
+        gtk_widget_set_visible(dlg->sync_save_label, TRUE);
+    }
+}
+
+static void on_settings_destroy(GtkWidget *widget, gpointer user_data)
+{
+    (void)widget;
+    SettingsDialog *dlg = user_data;
+
+    g_free(dlg);
+}
 
 void ui_show_settings_dialog(GtkWindow *parent)
 {
@@ -162,8 +219,10 @@ void ui_show_settings_dialog(GtkWindow *parent)
     GtkWidget *window = gtk_window_new();
     gtk_window_set_title(GTK_WINDOW(window), "Settings");
     gtk_window_set_default_size(GTK_WINDOW(window), 450, 500);
+    /* put window on top of parent but don't destroy the app when it closes */
     gtk_window_set_transient_for(GTK_WINDOW(window), parent);
     gtk_window_set_modal(GTK_WINDOW(window), TRUE);
+    gtk_window_set_destroy_with_parent(GTK_WINDOW(window), FALSE);
     dlg->dialog = GTK_WINDOW(window);
 
     GtkWidget *scroll = gtk_scrolled_window_new();
@@ -206,6 +265,78 @@ void ui_show_settings_dialog(GtkWindow *parent)
         GTK_SPIN_BUTTON(dlg->default_pw_spin), 20.0);
     gtk_box_append(GTK_BOX(pwlen_box), dlg->default_pw_spin);
     gtk_box_append(GTK_BOX(box), pwlen_box);
+
+    /* ── Cloud sync configuration ─────────────────────────────────────── */
+    GtkWidget *sync_section = gtk_label_new(NULL);
+    gtk_label_set_markup(GTK_LABEL(sync_section),
+                         "<b>Cloud Sync (Cloudflare R2)</b>");
+    gtk_label_set_xalign(GTK_LABEL(sync_section), 0.0f);
+    gtk_box_append(GTK_BOX(box), sync_section);
+
+    dlg->sync_enable_check = gtk_check_button_new_with_label("Enable sync");
+    gtk_box_append(GTK_BOX(box), dlg->sync_enable_check);
+
+    gtk_box_append(GTK_BOX(box), gtk_label_new("Endpoint URL:"));
+    dlg->sync_endpoint_entry = gtk_entry_new();
+    gtk_entry_set_placeholder_text(GTK_ENTRY(dlg->sync_endpoint_entry),
+                                   "https://<account-id>.r2.cloudflarestorage.com");
+    gtk_box_append(GTK_BOX(box), dlg->sync_endpoint_entry);
+
+    gtk_box_append(GTK_BOX(box), gtk_label_new("Bucket name:"));
+    dlg->sync_bucket_entry = gtk_entry_new();
+    gtk_entry_set_placeholder_text(GTK_ENTRY(dlg->sync_bucket_entry),
+                                   "my-vault-bucket");
+    gtk_box_append(GTK_BOX(box), dlg->sync_bucket_entry);
+
+    gtk_box_append(GTK_BOX(box), gtk_label_new("Access key ID:"));
+    dlg->sync_access_key_entry = gtk_entry_new();
+    gtk_entry_set_placeholder_text(GTK_ENTRY(dlg->sync_access_key_entry),
+                                   "R2 Access Key ID");
+    gtk_box_append(GTK_BOX(box), dlg->sync_access_key_entry);
+
+    gtk_box_append(GTK_BOX(box), gtk_label_new("Secret access key:"));
+    dlg->sync_secret_key_entry = gtk_entry_new();
+    gtk_entry_set_visibility(GTK_ENTRY(dlg->sync_secret_key_entry), FALSE);
+    gtk_entry_set_placeholder_text(GTK_ENTRY(dlg->sync_secret_key_entry),
+                                   "R2 Secret Access Key");
+    gtk_box_append(GTK_BOX(box), dlg->sync_secret_key_entry);
+
+    gtk_box_append(GTK_BOX(box), gtk_label_new("Object key:"));
+    dlg->sync_object_entry = gtk_entry_new();
+    gtk_entry_set_placeholder_text(GTK_ENTRY(dlg->sync_object_entry),
+                                   "vault.vcf");
+    gtk_box_append(GTK_BOX(box), dlg->sync_object_entry);
+
+    /* Save button and feedback label */
+    dlg->sync_save_label = gtk_label_new("");
+    gtk_widget_set_visible(dlg->sync_save_label, FALSE);
+    gtk_box_append(GTK_BOX(box), dlg->sync_save_label);
+
+    dlg->sync_save_btn = gtk_button_new_with_label("Save Sync Settings");
+    g_signal_connect(dlg->sync_save_btn, "clicked",
+                     G_CALLBACK(on_sync_save_clicked), dlg);
+    gtk_box_append(GTK_BOX(box), dlg->sync_save_btn);
+
+    /* populate fields from existing config if available */
+    {
+        SyncConfig *cfg = sync_config_load();
+        if (cfg)
+        {
+            gtk_check_button_set_active(GTK_CHECK_BUTTON(dlg->sync_enable_check),
+                                        cfg->enabled);
+            if (cfg->endpoint)
+                gtk_editable_set_text(GTK_EDITABLE(dlg->sync_endpoint_entry), cfg->endpoint);
+            if (cfg->bucket)
+                gtk_editable_set_text(GTK_EDITABLE(dlg->sync_bucket_entry), cfg->bucket);
+            if (cfg->access_key_id)
+                gtk_editable_set_text(GTK_EDITABLE(dlg->sync_access_key_entry), cfg->access_key_id);
+            if (cfg->secret_access_key)
+                gtk_editable_set_text(GTK_EDITABLE(dlg->sync_secret_key_entry), cfg->secret_access_key);
+            if (cfg->object_key)
+                gtk_editable_set_text(GTK_EDITABLE(dlg->sync_object_entry), cfg->object_key);
+            sync_config_free(cfg);
+        }
+    }
 
     /* ── Separator ─────────────────────────────────────────────────────── */
     gtk_box_append(GTK_BOX(box), gtk_separator_new(
@@ -253,8 +384,7 @@ void ui_show_settings_dialog(GtkWindow *parent)
     dlg->change_pw_btn = change_btn;
 
     /* Cleanup */
-    g_signal_connect_swapped(window, "destroy",
-                             G_CALLBACK(g_free), dlg);
+    g_signal_connect(window, "destroy", G_CALLBACK(on_settings_destroy), dlg);
 
     gtk_window_present(GTK_WINDOW(window));
 }

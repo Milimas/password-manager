@@ -116,6 +116,9 @@ static void on_save_clicked(GtkButton *btn, gpointer user_data)
         return;
     }
 
+    /* Persist vault to disk and trigger background sync upload */
+    session_save();
+
     /* update the main window list before closing */
     ui_main_window_refresh(dlg->parent);
 
@@ -144,7 +147,18 @@ static void on_delete_clicked(GtkButton *btn, gpointer user_data)
         return;
     }
 
-    session_entry_delete(dlg->uuid);
+    VaultcError derr = session_entry_delete(dlg->uuid);
+    if (derr != VAULTC_OK)
+    {
+        /* show error? for now just refresh and close */
+        ui_main_window_refresh(dlg->parent);
+        gtk_window_destroy(dlg->dialog);
+        return;
+    }
+
+    /* Persist vault to disk and trigger background sync upload */
+    session_save();
+
     ui_main_window_refresh(dlg->parent);
     gtk_window_destroy(dlg->dialog);
 }

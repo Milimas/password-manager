@@ -31,6 +31,7 @@ extern "C"
         VAULTC_ERR_NOT_FOUND = -8,    /**< Entry not found */
         VAULTC_ERR_DB = -9,           /**< SQLite error */
         VAULTC_ERR_TOO_LONG = -10,    /**< String exceeds maximum length */
+        VAULTC_ERR_NETWORK = -11,     /**< Network or sync error */
     } VaultcError;
 
     /**

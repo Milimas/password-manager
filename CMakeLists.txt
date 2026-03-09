@@ -60,6 +60,13 @@ find_package(SQLite3 REQUIRED)
 # GTK4
 pkg_check_modules(GTK4 REQUIRED gtk4)
 
+# libcurl (optional, for cloud sync)
+find_package(CURL)
+if(CURL_FOUND)
+    message(STATUS "libcurl: ${CURL_VERSION_STRING}")
+    add_compile_definitions(HAVE_LIBCURL=1)
+endif()
+
 message(STATUS "libsodium: ${SODIUM_VERSION}")
 message(STATUS "SQLite3:   ${SQLite3_VERSION}")
 message(STATUS "GTK4:      ${GTK4_VERSION}")
